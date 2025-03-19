@@ -1,4 +1,9 @@
+use cap::Cap;
 use clap::Parser;
+use std::alloc;
+
+#[global_allocator]
+pub static ALLOCATOR: Cap<alloc::System> = Cap::new(alloc::System, usize::MAX);
 
 #[derive(Parser, Debug)]
 pub struct Config {
@@ -20,12 +25,15 @@ pub struct Config {
 
 impl Config {
     pub fn threadlimit(&self) {
-        match self.threads {
-            Some(n) => rayon::ThreadPoolBuilder::new()
+        if let Some(n) = self.threads {
+            rayon::ThreadPoolBuilder::new()
                 .num_threads(n)
                 .build_global()
-                .unwrap(),
-            None => (),
+                .unwrap()
         }
+    }
+
+    pub fn memlimit(&self) {
+        ALLOCATOR.set_limit(self.memory).unwrap();
     }
 }
