@@ -1,3 +1,7 @@
+use clap::Parser;
+mod config;
+mod inputprocessor;
+
 fn main() {
-    println!("Hello, world!");
+    let config = config::Config::parse();
 }
