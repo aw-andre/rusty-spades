@@ -7,12 +7,12 @@ pub static ALLOCATOR: Cap<alloc::System> = Cap::new(alloc::System, usize::MAX);
 
 #[derive(Parser, Debug)]
 pub struct Config {
-    #[arg(short, long, required_unless_present("interleaved"))]
+    #[arg(short, long, required_unless_present("resume"))]
     pub forward: Option<String>,
-    #[arg(short, long, required_unless_present("interleaved"))]
+    #[arg(short, long, required_unless_present("resume"))]
     pub reverse: Option<String>,
     #[arg(short, long, required_unless_present_all(&["forward", "reverse"]))]
-    pub interleaved: Option<String>,
+    pub resume: Option<String>,
     #[arg(short, long, default_value = "output")]
     pub output: String,
     #[arg(short, long, default_values = ["21", "33", "55"])]
