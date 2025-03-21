@@ -1,8 +1,9 @@
 use super::config::Config;
 use std::path::Path;
 use std::fs::File;
-use std::io::BufReader;
-use bio::io::fastq::{ Reader, Records };
+use std::io::*;
+use bio::io::fastq::{Reader, Record, Records};
+use rayon::prelude::*;
 
 impl Config {
     fn to_paths(&self) -> (&Path, &Path) {
@@ -18,11 +19,9 @@ impl Config {
         (forward, reverse)
     }
 
-    pub fn to_iterators(&self) -> (Records<BufReader<File>>, Records<BufReader<File>>) {
+    pub fn to_iterators(&self) -> (rayon::iter::IterBridge<Records<BufReader<File>>>, rayon::iter::IterBridge<Records<BufReader<File>>>) {
         let (forward, reverse) = self.to_files();
-        let forward = forward.records();
-        let reverse = reverse.records();
-        (forward, reverse)
-    }
+        let forward = forward.records().par_bridge();
+        let reverse = reverse.records().par_bridge();
+        (forward, reverse) }
 }
-
