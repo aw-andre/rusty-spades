@@ -24,16 +24,18 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn threadlimit(&self) {
+    pub fn threadlimit(&self) -> &Self {
         if let Some(n) = self.threads {
             rayon::ThreadPoolBuilder::new()
                 .num_threads(n)
                 .build_global()
                 .unwrap()
         }
+        self
     }
 
-    pub fn memlimit(&self) {
+    pub fn memlimit(&self) -> &Self {
         ALLOCATOR.set_limit(self.memory).unwrap();
+        self
     }
 }
